@@ -1,39 +1,37 @@
-pipeline {   
+pipeline {
     agent any
-    
+
     stages {
         stage('Start') {
             steps {
-                echo 'Lab2: nginx/custom'
+                echo 'Lab_2: started by GitHub'
             }
         }
-        
-        
-        stage('Build nginx/custom') {
+
+        stage('Image build') {
             steps {
-                sh 'docker build -t nginx/custom:latest .'
+                sh "docker build -t prikm:latest ."
+                sh "docker tag prikm justendray/prikm:latest"
+                sh "docker tag prikm justendray/prikm:$BUILD_NUMBER"
             }
         }
-        
-        stage('Test nginx/custom') {
+
+        stage('Push to registry') {
             steps {
-                echo 'Pass'
+                withDockerRegistry([ credentialsId: "justendray", url: "" ]) {
+                    sh "docker push justendray/prikm:latest"
+                    sh "docker push justendray/prikm:$BUILD_NUMBER"
+                }
             }
         }
-        
-        stage('Deploy nginx/custom'){
-            steps{
-                sh "docker run -d -p 80:80 nginx/custom:latest"
-            }
-        }
-        
-        stage('Cleanup') {
+    
+        stage('Deploy image') {
             steps {
-                echo 'Cleaning up unused Docker resources...'
-                sh 'docker system prune -f'
+                sh "docker run -d -p 80:80 justendray/prikm"
             }
         }
     }
 }
+
 
 
