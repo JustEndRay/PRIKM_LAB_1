@@ -16,6 +16,13 @@ pipeline {
             }
         }
 
+        stage('Test Image') {
+            steps {
+                echo 'Running containerized test...'
+                sh "docker run --rm justendray/prikm:latest echo 'Test passed!'"
+            }
+        }
+
         stage('Push to registry') {
             steps {
                 withDockerRegistry([ credentialsId: "justendray", url: "" ]) {
@@ -32,6 +39,7 @@ pipeline {
         }
     }
 }
+
 
 
 
