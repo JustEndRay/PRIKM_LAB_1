@@ -1,24 +1,15 @@
 pipeline {
     agent any
 
-    // Use the 'options' block instead of 'properties' for defining webhook configurations
     options {
-        office365ConnectorWebhooks([
-            webhooks([
-                webhook([
-                    name: 'Teams-O365',
-                    url: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
-                    startNotification: false,
-                    notifySuccess: true,
-                    notifyAborted: false,
-                    notifyNotBuilt: false,
-                    notifyUnstable: true,
-                    notifyFailure: true,
-                    notifyBackToNormal: true,
-                    notifyRepeatedFailure: false,
-                    timeout: 30000
-                ])
-            ])
+        // Office 365 connector webhook configuration
+        office365ConnectorSend([
+            webhookUrl: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
+            status: 'STARTED',
+            startNotification: true,
+            notifyFailure: true,
+            notifySuccess: true,
+            notifyUnstable: true
         ])
     }
 
@@ -50,6 +41,23 @@ pipeline {
                 sh "docker rm nginx_container || true"
                 sh "docker run -d -p 8080:80 --name nginx_container justendray/prikm"
             }
+        }
+    }
+
+    post {
+        success {
+            office365ConnectorSend([
+                webhookUrl: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
+                status: 'SUCCESS',
+                notifySuccess: true
+            ])
+        }
+        failure {
+            office365ConnectorSend([
+                webhookUrl: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
+                status: 'FAILURE',
+                notifyFailure: true
+            ])
         }
     }
 }
