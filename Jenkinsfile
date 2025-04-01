@@ -2,11 +2,14 @@ pipeline {
     agent any
 
     options {
-        // Office 365 connector webhook configuration
         office365ConnectorWebhooks([
-            webhookUrl: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
-            status: 'STARTED',
-            startNotification: true
+            webhooks: [
+                [
+                    url: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
+                    status: 'STARTED',
+                    startNotification: true
+                ]
+            ]
         ])
     }
 
@@ -44,14 +47,22 @@ pipeline {
     post {
         success {
             office365ConnectorWebhooks([
-                webhookUrl: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
-                status: 'SUCCESS'
+                webhooks: [
+                    [
+                        url: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
+                        status: 'SUCCESS'
+                    ]
+                ]
             ])
         }
         failure {
             office365ConnectorWebhooks([
-                webhookUrl: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
-                status: 'FAILURE'
+                webhooks: [
+                    [
+                        url: 'https://lpnu.webhook.office.com/webhookb2/8418f46b-fca7-4175-a63d-71875f1d0283@7631cd62-5187-4e15-8b8e-ef653e366e7a/IncomingWebhook/0e7f85b5c10c442a99ae533db00b229f/5b605148-d3bc-4f02-a915-417fbd0843c8/V29Y-V7QzJXfaIIZT1xgYmcjzSJtFPuNFZfEvIzhdWrpo1',
+                        status: 'FAILURE'
+                    ]
+                ]
             ])
         }
     }
