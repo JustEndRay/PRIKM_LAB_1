@@ -30,6 +30,15 @@ pipeline {
             steps {
                 echo 'Running containerized test...'
                 sh "docker run --rm justendray/prikm:latest echo 'Test passed!'"
+                
+                // Run JUnit test (example)
+                sh "docker run --rm prikm:latest pytest --maxfail=1 --disable-warnings --verbose > result.xml"
+            }
+            post {
+                always {
+                    // Publish JUnit test result
+                    junit 'result.xml'
+                }
             }
         }
         stage('Deploy image') {
@@ -43,11 +52,6 @@ pipeline {
 
     post {
         success {
-            emailext(
-                subject: "Build Success",
-                body: "Build ${currentBuild.fullDisplayName} was successful.",
-                to: 'andrii.pastushuk.mitpa.2024@lpnu.ua'
-            )
             office365ConnectorWebhooks([
                 webhooks: [
                     [
