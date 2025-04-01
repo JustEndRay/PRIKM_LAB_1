@@ -1,7 +1,8 @@
 pipeline {
     agent any
 
-    option {
+    // Use the 'options' block instead of 'properties' for defining webhook configurations
+    options {
         office365ConnectorWebhooks([
             webhooks([
                 webhook([
@@ -42,8 +43,6 @@ pipeline {
                 sh "docker run --rm justendray/prikm:latest echo 'Test passed!'"
             }
         }
-
-
 
         stage('Deploy image') {
             steps {
