@@ -19,6 +19,14 @@ pipeline {
                 echo 'Lab_3: started by GitHub'
             }
         }
+        
+        stage('Lint Dockerfile') {
+            steps {
+                echo 'Running Hadolint to check Dockerfile...'
+                sh 'hadolint Dockerfile'
+            }
+        }
+        
         stage('Image build') {
             steps {
                 sh "docker build -t prikm:latest ."
@@ -26,21 +34,21 @@ pipeline {
                 sh "docker tag prikm justendray/prikm:$BUILD_NUMBER"
             }
         }
+        
+        stage('Security Scan') {
+            steps {
+                echo 'Running Trivy security scan...'
+                sh "trivy image --exit-code 1 --severity HIGH,CRITICAL justendray/prikm:latest"
+            }
+        }
+        
         stage('Test Image') {
             steps {
                 echo 'Running containerized test...'
                 sh "docker run --rm justendray/prikm:latest echo 'Test passed!'"
-                
-                // Run JUnit test (example)
-                sh "docker run --rm prikm:latest pytest --maxfail=1 --disable-warnings --verbose > result.xml"
-            }
-            post {
-                always {
-                    // Publish JUnit test result
-                    junit 'result.xml'
-                }
             }
         }
+        
         stage('Deploy image') {
             steps {
                 sh "docker stop nginx_container || true"
