@@ -39,11 +39,11 @@ pipeline {
             steps {
                 sh "docker stop nginx_container || true"
                 sh "docker rm nginx_container || true"
-                sh "docker run -d -p 8080:80 --name nginx_container justendray/prikm"
+                sh "docker run -d -p 80:80 --name nginx_container justendray/prikm"
             }
         }
     }
-
+//new port
     post {
         success {
             office365ConnectorWebhooks([
