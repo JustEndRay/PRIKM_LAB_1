@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    properties([
+    option {
         office365ConnectorWebhooks([
             webhooks([
                 webhook([
@@ -19,7 +19,7 @@ pipeline {
                 ])
             ])
         ])
-    ])
+    }
 
     stages {
         stage('Start') {
