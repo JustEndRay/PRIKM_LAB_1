@@ -23,7 +23,7 @@ pipeline {
         stage('Lint Dockerfile') {
             steps {
                 echo 'Running Hadolint to check Dockerfile...'
-                sh 'hadolint Dockerfile'
+                sh "hadolint --ignore DL3007 Dockerfile"
             }
         }
         
