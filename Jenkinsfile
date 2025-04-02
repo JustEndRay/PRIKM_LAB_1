@@ -11,6 +11,8 @@ pipeline {
                 ]
             ]
         ])
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag')
+        choice(name: 'DEPLOY_ENV', choices: ['staging', 'production'], description: 'Deployment Environment')
     }
 
     stages {
@@ -30,6 +32,14 @@ pipeline {
             steps {
                 echo 'Running containerized test...'
                 sh "docker run --rm justendray/prikm:latest echo 'Test passed!'"
+            }
+        }
+        stage('Pre-Deploy Checks') {
+            steps {
+                script {
+                    def configContent = readFile('nginx.conf')
+                    echo "Nginx Config: ${configContent}"
+                }
             }
         }
         stage('Deploy image') {
