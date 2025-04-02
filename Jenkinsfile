@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag')
+        choice(name: 'DEPLOY_ENV', choices: ['staging', 'production'], description: 'Deployment Environment')
+    }
     options {
         office365ConnectorWebhooks([
             webhooks: [
@@ -11,8 +15,6 @@ pipeline {
                 ]
             ]
         ])
-        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag')
-        choice(name: 'DEPLOY_ENV', choices: ['staging', 'production'], description: 'Deployment Environment')
     }
 
     stages {
