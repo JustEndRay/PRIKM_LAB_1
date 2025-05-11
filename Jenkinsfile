@@ -1,50 +1,39 @@
-pipeline {
+pipeline {   
     agent any
-
-    parameters {
-        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag')
-        choice(name: 'DEPLOY_ENV', choices: ['staging', 'production'], description: 'Deployment Environment')
-    }
-
+    
     stages {
         stage('Start') {
             steps {
-                echo 'Lab_4: started by GitHub'
+                echo 'Lab2: nginx/custom'
             }
         }
-
-        stage('Image build') {
+        
+        
+        stage('Build nginx/custom') {
             steps {
-                sh "docker build -t prikm:latest ."
-                sh "docker tag prikm justendray/prikm:latest"
-                sh "docker tag prikm justendray/prikm:$BUILD_NUMBER"
+                sh 'docker build -t nginx/custom:latest .'
             }
         }
-
-        stage('Test Image') {
+        
+        stage('Test nginx/custom') {
             steps {
-                echo 'Running containerized test...'
-                sh "docker run --rm justendray/prikm:latest echo 'Test passed!'"
+                echo 'Pass'
             }
         }
-
-        stage('Pre-Deploy Checks') {
-            steps {
-                script {
-                    def configContent = readFile('nginx.conf')
-                    echo "Nginx Config: ${configContent}"
-                }
+        
+        stage('Deploy nginx/custom'){
+            steps{
+                sh "docker run -d -p 80:80 nginx/custom:latest"
             }
         }
-
-        stage('Deploy using Docker Compose') {
+        
+        stage('Cleanup') {
             steps {
-                echo 'Starting services with Docker Compose...'
-                sh '''
-                    docker-compose -f docker-compose.yml down --remove-orphans
-                    docker-compose -f docker-compose.yml up -d
-                '''
+                echo 'Cleaning up unused Docker resources...'
+                sh 'docker system prune -f'
             }
         }
     }
 }
+
+
